@@ -47,7 +47,17 @@ select {
   border: 3px solid #793cff;
   border-bottom: 0;
 }
-
+.brand-name{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    min-height:42px;
+    padding:8px 16px;
+    border-radius:999px;
+    background:var(--cyan);
+    font-weight:700;
+    color:var(--ink);
+}
 .brand-row,
 .action-row,
 .practice-switch {
@@ -73,16 +83,7 @@ h1 {
 }
 
 h1::after {
-  content: "";
-  position: absolute;
-  right: 18px;
-  top: 50%;
-  width: 0;
-  height: 0;
-  border-left: 12px solid transparent;
-  border-right: 12px solid transparent;
-  border-top: 22px solid var(--ink);
-  transform: translateY(-43%);
+  Display:none;
 }
 
 .status-pill,
@@ -203,7 +204,7 @@ select {
 .sentence-board {
   display: grid;
   gap: 10px;
-  grid-template-columns: repeat(auto-fit, minmax(128px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
 }
 
 .slot {
@@ -411,6 +412,19 @@ select {
 }
 
 @media (min-width: 720px) {
+.brand-row{
+    flex-direction: column;
+    align-items: stretch;
+}
+
+.brand-row h1{
+    width:100%;
+}
+
+.status-pill{
+    display:flex;
+    justify-content:center;
+}
   .top-panel {
     padding: 24px 48px 20px;
   }
@@ -426,11 +440,16 @@ select {
   .mode-tabs {
     grid-template-columns: repeat(5, minmax(120px, 1fr));
   }
-
+  .category {
+  flex: auto; /* ancho fijo de cada panel */
+ }
   .bank-panel {
-    grid-template-columns: repeat(auto-fit, minmax(185px, 1fr));
-    align-items: start;
-  }
+  display: flex;
+  gap: 12px;
+  
+  padding: 16px;
+  align-items: flex-start;
+}
 }
 
 @supports not (background: color-mix(in srgb, red 50%, white)) {
@@ -438,3 +457,4 @@ select {
     background: #fff;
   }
 }
+
