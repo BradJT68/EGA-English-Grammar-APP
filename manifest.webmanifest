@@ -1,0 +1,9 @@
+{
+  "name": "Grammar Builder",
+  "short_name": "Grammar",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#5bc6df",
+  "theme_color": "#46c8d8",
+  "icons": []
+}

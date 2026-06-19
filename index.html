@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#46c8d8" />
+    <title>Grammar Builder</title>
+    <link rel="manifest" href="manifest.webmanifest" />
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <main class="app-shell">
+      <section class="top-panel" aria-label="Grammar controls">
+        <div class="brand-row">
+          <h1>Grammar Builder</h1>
+          <span class="status-pill" id="statusPill">Free Practice</span>
+        </div>
+
+        <div class="control-grid">
+          <label class="field">
+            <span>Tense</span>
+            <select id="tenseSelect"></select>
+          </label>
+          <label class="field">
+            <span>Level</span>
+            <select id="levelSelect">
+              <option value="basic">Basic</option>
+              <option value="intermediate">Intermediate</option>
+              <option value="advanced">Advanced</option>
+            </select>
+          </label>
+        </div>
+
+        <div class="mode-tabs" id="modeTabs" aria-label="Sentence type"></div>
+
+        <div class="practice-switch" role="group" aria-label="Practice mode">
+          <button class="switch-button is-active" type="button" data-practice="free">Free</button>
+          <button class="switch-button" type="button" data-practice="challenge">Goal</button>
+        </div>
+
+        <article class="goal-panel" id="goalPanel" hidden>
+          <span>Build this:</span>
+          <strong id="goalText"></strong>
+          <button class="icon-button" id="nextGoalButton" type="button" aria-label="Next goal">Next</button>
+        </article>
+
+        <article class="structure-panel">
+          <span>Structure</span>
+          <strong id="structureText"></strong>
+        </article>
+
+        <section class="sentence-board" id="sentenceBoard" aria-label="Sentence builder"></section>
+
+        <div class="action-row">
+          <button class="primary-button" id="checkButton" type="button">Check</button>
+          <button class="ghost-button" id="clearButton" type="button">Clear</button>
+          <p class="feedback" id="feedback" aria-live="polite"></p>
+        </div>
+      </section>
+
+      <section class="bank-panel" id="bankPanel" aria-label="Word bank"></section>
+    </main>
+
+    <script src="script.js"></script>
+  </body>
+</html>
