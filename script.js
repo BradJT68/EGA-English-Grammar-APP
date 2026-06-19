@@ -253,7 +253,6 @@ const els = {
   tenseSelect: document.querySelector("#tenseSelect"),
   levelSelect: document.querySelector("#levelSelect"),
   modeTabs: document.querySelector("#modeTabs"),
-  statusPill: document.querySelector("#statusPill"),
   goalPanel: document.querySelector("#goalPanel"),
   goalText: document.querySelector("#goalText"),
   nextGoalButton: document.querySelector("#nextGoalButton"),
@@ -336,7 +335,6 @@ function render() {
   els.tenseSelect.value = state.tense;
   els.levelSelect.value = state.level;
   els.structureText.textContent = getStructureText(tense);
-  els.statusPill.textContent = state.practice === "free" ? "Free Practice" : "Goal Practice";
   els.goalPanel.hidden = state.practice !== "challenge";
   els.goalText.textContent = state.practice === "challenge" ? state.goal?.display ?? "" : "";
 
