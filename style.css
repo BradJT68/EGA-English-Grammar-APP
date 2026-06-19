@@ -411,7 +411,7 @@ select {
   box-shadow: var(--shadow);
 }
 
-@media (min-width: 720px) {
+@media (min-width: 719px) {
 .brand-row{
     flex-direction: column;
     align-items: stretch;
