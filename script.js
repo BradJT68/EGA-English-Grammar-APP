@@ -147,11 +147,11 @@ const TENSES = {
       short: "Yes/No + subject + did/didn't",
     },
     slots: {
-      affirmative: ["noun", "verbPast", "complement", "time"],
-      negative: ["noun", "auxDid", "negative", "verbBase", "complement", "time"],
-      wh: ["wh", "auxDid", "noun", "verbBase", "complement", "time"],
-      yesno: ["auxDid", "noun", "verbBase", "complement", "time"],
-      short: ["answer", "noun", "shortDid"],
+      affirmative: ["subject", "verbPast", "complement", "time"],
+      negative: ["subject", "auxDid", "negative", "verbBase", "complement", "time"],
+      wh: ["wh", "auxDid", "subject", "verbBase", "complement", "time"],
+      yesno: ["auxDid", "subject", "verbBase", "complement", "time"],
+      short: ["answer", "subject", "shortDid"],
     },
   },
   simplePresent: {
@@ -165,11 +165,11 @@ const TENSES = {
       short: "Yes/No + subject + do/does/don't/doesn't",
     },
     slots: {
-      affirmative: ["noun", "verbPresent", "complement", "time"],
-      negative: ["noun", "auxDo", "negative", "verbBase", "complement", "time"],
-      wh: ["wh", "auxDo", "noun", "verbBase", "complement", "time"],
-      yesno: ["auxDo", "noun", "verbBase", "complement", "time"],
-      short: ["answer", "noun", "shortDo"],
+      affirmative: ["subject", "verbPresent", "complement", "time"],
+      negative: ["subject", "auxDo", "negative", "verbBase", "complement", "time"],
+      wh: ["wh", "auxDo", "subject", "verbBase", "complement", "time"],
+      yesno: ["auxDo", "subject", "verbBase", "complement", "time"],
+      short: ["answer", "subject", "shortDo"],
     },
   },
   goingTo: {
@@ -183,11 +183,11 @@ const TENSES = {
       short: "Yes/No + subject + am/is/are/am not/isn't/aren't",
     },
     slots: {
-      affirmative: ["noun", "be", "goingTo", "verbBase", "complement", "time"],
-      negative: ["noun", "be", "negative", "goingTo", "verbBase", "complement", "time"],
-      wh: ["wh", "be", "noun", "goingTo", "verbBase", "complement", "time"],
-      yesno: ["be", "noun", "goingTo", "verbBase", "complement", "time"],
-      short: ["answer", "noun", "shortBe"],
+      affirmative: ["subject", "be", "goingTo", "verbBase", "complement", "time"],
+      negative: ["subject", "be", "negative", "goingTo", "verbBase", "complement", "time"],
+      wh: ["wh", "be", "subject", "goingTo", "verbBase", "complement", "time"],
+      yesno: ["be", "subject", "goingTo", "verbBase", "complement", "time"],
+      short: ["answer", "subject", "shortBe"],
     },
   },
   presentProgressive: {
@@ -201,11 +201,11 @@ const TENSES = {
       short: "Yes/No + subject + am/is/are/am not/isn't/aren't",
     },
     slots: {
-      affirmative: ["noun", "be", "verbIng", "complement", "time"],
-      negative: ["noun", "be", "negative", "verbIng", "complement", "time"],
-      wh: ["wh", "be", "noun", "verbIng", "complement", "time"],
-      yesno: ["be", "noun", "verbIng", "complement", "time"],
-      short: ["answer", "noun", "shortBe"],
+      affirmative: ["subject", "be", "verbIng", "complement", "time"],
+      negative: ["subject", "be", "negative", "verbIng", "complement", "time"],
+      wh: ["wh", "be", "subject", "verbIng", "complement", "time"],
+      yesno: ["be", "subject", "verbIng", "complement", "time"],
+      short: ["answer", "subject", "shortBe"],
     },
   },
 };
@@ -217,7 +217,7 @@ const LEVEL_LIMITS = {
 };
 
 const CATEGORY_LABELS = {
-  noun: "Noun",
+  subject: "Subject",
   verbPast: "Past Verb",
   verbPresent: "Present Verb",
   verbBase: "Base Verb",
@@ -432,7 +432,7 @@ function getWordsForSlot(slotType) {
   const selectedVerb = getSelectedVerb();
 
   const wordsBySlot = {
-    noun: subjects.map((subject) => word(slotType, subject.text, subject.text)),
+    subject: subjects.map((subject) => word(slotType, subject.text, subject.text)),
     verbPast: verbs.map((verb) => word(slotType, verb.past, verb.past, verb.base)),
     verbBase: verbs.map((verb) => word(slotType, verb.base, verb.base, verb.base)),
     verbIng: verbs.map((verb) => word(slotType, verb.ing, verb.ing, verb.base)),
@@ -616,7 +616,7 @@ function validateSlot(index, slotType) {
 
 function validateGrammar(index, item) {
   const slots = getSlots();
-  const subject = getPlacedBySlot("noun");
+  const subject = getPlacedBySlot("subject");
   const verb = getSelectedVerb();
 
   if (item.slot === "complement" && verb) {
@@ -693,7 +693,7 @@ function newGoal() {
 
 function goalValue(slot, subject, verb, answer, goalWh = "") {
   const values = {
-    noun: subject.text,
+    subject: subject.text,
     verbPast: verb.past,
     verbPresent: subject.group === "third" ? verb.present3 : verb.base,
     verbBase: verb.base,
