@@ -413,7 +413,7 @@ select {
 
 @media (min-width: 720px) {
 .brand-row{
-    flex-direction: column;
+    flex-direction: row;
     align-items: stretch;
 }
 
