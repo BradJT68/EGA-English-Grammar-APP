@@ -5,10 +5,10 @@ const MODES = [
   { id: "yesno", label: "Yes-No Question" },
   { id: "short", label: "Short Answer" },
 ];
-
+//lista de sujetos
 const SUBJECTS = [
   { text: "I", group: "first" },
-  { text: "you", group: "second" },
+  { text: "you", group: "plural" },
   { text: "he", group: "third" },
   { text: "she", group: "third" },
   { text: "it", group: "third" },
@@ -20,6 +20,8 @@ const SUBJECTS = [
   { text: "the students", group: "plural" },
 ];
 
+
+//lista de verbos 
 const VERBS = [
   {
     base: "eat",
@@ -133,8 +135,30 @@ const VERBS = [
     ing: "helping",
     complements: ["my friend", "the teacher", "my brother", "the students", "my family", "a customer", "Ana", "the team"],
   },
+  {
+    base: "find",
+    past: "found",
+    present3: "finds",
+    ing: "finding",
+    complements: ["my keys", "a book", "the truth", "a solution", "the way", "a friend", "the teacher", "my family"],
+  },
+  {
+    base: "work",
+    past: "worked",
+    present3: "works",
+    ing: "working",
+    complements: ["at the office", "in the garden", "on the project", "with the team", "on the homework", "at the library", "on the computer", "in the classroom"],
+  },
+  {
+    base: "try",
+    past: "tried",
+    present3: "tries",
+    ing: "trying",
+    complements: ["new food", "a new hobby", "to learn English", "to play the guitar", "to draw better", "to cook", "to dance", "to write a story"],
+  },
 ];
 
+//estructuras de los tiempos
 const TENSES = {
   simplePast: {
     label: "Simple Past",
@@ -205,17 +229,36 @@ const TENSES = {
       negative: ["subject", "be", "negative", "verbIng", "complement", "time"],
       wh: ["wh", "be", "subject", "verbIng", "complement", "time"],
       yesno: ["be", "subject", "verbIng", "complement", "time"],
-      short: ["answer", "subject", "shortBe"],
+      short: ["answer", "subject", "shortBe"], 
     },
   },
+  pastProgressive: {
+    label: "Past Progressive",
+    time :["yesterday", "last night", "last week", "two days ago", "last month", "in 2020", "this morning", "a year ago", "last weekend", "on Monday"],
+    structure: {
+       affirmative: "Subject + was/were + verb-ing + complement + past time",
+      negative: "Subject + was/were not + verb-ing + complement + past time",
+      wh: "W-H word + was/were + subject + verb-ing + complement + past time?",
+      yesno: "Was/Were + subject + verb-ing + complement + past time?",
+      short: "Yes/No + subject + was/were/wasn't/weren't",
+    },
+    slots:{
+      affirmative: ["subject", "pastbe", "verbIng", "complement", "time"],
+      negative: ["subject", "pastbe", "negative", "verbIng", "complement", "time"],
+      wh: ["wh", "pastbe", "subject", "verbIng", "complement", "time"],
+      yesno: ["pastbe", "subject", "verbIng", "complement", "time"],
+      short: ["answer", "subject", "shortPastBe"],
+    } 
+  }
 };
-
+//configuracion de nivelels
 const LEVEL_LIMITS = {
   basic: { subjects: 4, verbs: 5, extras: 0 },
   intermediate: { subjects: 6, verbs: 8, extras: 2 },
   advanced: { subjects: SUBJECTS.length, verbs: VERBS.length, extras: 5 },
 };
 
+//categorias gramaticales
 const CATEGORY_LABELS = {
   subject: "Subject",
   verbPast: "Past Verb",
@@ -226,6 +269,7 @@ const CATEGORY_LABELS = {
   time: "Time Expression",
   auxDid: "Auxiliary",
   auxDo: "Auxiliary",
+  pastbe: "Past Be",
   negative: "Negative",
   wh: "W-H Word",
   be: "Be Verb",
@@ -234,10 +278,12 @@ const CATEGORY_LABELS = {
   shortDid: "Short Aux",
   shortDo: "Short Aux",
   shortBe: "Short Be",
+  shortPastBe: "Short Past Be"
 };
 
+//estado inicial de la pagina
 const state = {
-  tense: "simplePast",
+  tense: "simplePresent",
   mode: "affirmative",
   level: "basic",
   practice: "free",
@@ -247,8 +293,9 @@ const state = {
   goal: null,
   drag: null,
   shuffleKey: Math.random(),
+  hideTime: true,
 };
-
+//referencias de html botones selectores modos etc
 const els = {
   tenseSelect: document.querySelector("#tenseSelect"),
   levelSelect: document.querySelector("#levelSelect"),
@@ -262,7 +309,9 @@ const els = {
   checkButton: document.querySelector("#checkButton"),
   clearButton: document.querySelector("#clearButton"),
   feedback: document.querySelector("#feedback"),
+  hideTimeToggle: document.querySelector("#hideTimeToggle"),
 };
+
 
 function init() {
   Object.entries(TENSES).forEach(([id, tense]) => {
@@ -327,7 +376,14 @@ function bindEvents() {
     render();
   });
 
+  els.hideTimeToggle.addEventListener("change", (event) => {
+    state.hideTime = event.target.checked;
+    resetBoard();
+    render();
+  });
+
   els.checkButton.addEventListener("click", checkAnswer);
+
 }
 
 function render() {
@@ -335,8 +391,9 @@ function render() {
   els.tenseSelect.value = state.tense;
   els.levelSelect.value = state.level;
   els.structureText.textContent = getStructureText(tense);
-  els.goalPanel.hidden = state.practice !== "challenge";
+  els.goalPanel.style.display =state.practice === "challenge" ? "grid" : "none";
   els.goalText.textContent = state.practice === "challenge" ? state.goal?.display ?? "" : "";
+  els.hideTimeToggle.checked = state.hideTime;
 
   document.querySelectorAll("[data-practice]").forEach((button) => {
     button.classList.toggle("is-active", button.dataset.practice === state.practice);
@@ -418,10 +475,22 @@ function renderBank() {
 }
 
 function getSlots() {
-  const slots = TENSES[state.tense].slots[state.mode];
-  if (state.mode === "wh" && currentWhValue() === "what") {
-    return slots.filter((slot) => slot !== "complement");
+  let slots = TENSES[state.tense].slots[state.mode];
+
+  if (state.mode === "wh") {
+    const whValue = currentWhValue();
+    if (whValue === "what") {
+      slots = slots.filter((slot) => slot !== "complement");
+    }
+    if (whValue === "when") {
+      slots = slots.filter((slot) => slot !== "time");
+    }
   }
+
+  if (state.hideTime) {
+    slots = slots.filter((slot) => slot !== "time");
+  }
+
   return slots;
 }
 
@@ -444,6 +513,7 @@ function getWordsForSlot(slotType) {
     time: TENSES[state.tense].time.map((item) => word(slotType, item, item)),
     auxDid: [word(slotType, "did", "did")],
     auxDo: ["do", "does"].map((item) => word(slotType, item, item)),
+    pastbe: ["was", "were"].map((item) => word(slotType, item, item)),
     negative: ["not"].map((item) => word(slotType, item, item)),
     wh: ["what", "where", "when", "why", "how"].map((item) => word(slotType, item, item)),
     be: ["am", "is", "are"].map((item) => word(slotType, item, item)),
@@ -452,6 +522,7 @@ function getWordsForSlot(slotType) {
     shortDid: ["did", "didn't"].map((item) => word(slotType, item, item)),
     shortDo: ["do", "does", "don't", "doesn't"].map((item) => word(slotType, item, item)),
     shortBe: ["am", "is", "are", "am not", "isn't", "aren't"].map((item) => word(slotType, item, item)),
+    shortPastBe: ["was", "were", "wasn't", "weren't"].map((item)=> word(slotType, item, item))
   };
 
   return wordsBySlot[slotType] ?? [];
@@ -636,8 +707,11 @@ function validateGrammar(index, item) {
   if (item.slot === "be" && subject) {
     return item.value === beForSubject(subject.value);
   }
+  if (item.slot === "pastbe" && subject) {
+    return item.value === pastBeForSubject(subject.value);
+  } 
 
-  if (["shortDid", "shortDo", "shortBe"].includes(item.slot)) {
+  if (["shortDid", "shortDo", "shortBe", "shortPastBe"].includes(item.slot)) {
     const answer = getPlacedBySlot("answer")?.value;
     if (!subject || !answer) return true;
     return shortAuxIsValid(item.value, subject.value, answer);
@@ -661,7 +735,12 @@ function shortAuxIsValid(aux, subjectText, answer) {
     const third = findSubject(subjectText)?.group === "third";
     if (isYes) return third ? aux === "does" : aux === "do";
     return third ? aux === "doesn't" : aux === "don't";
-  }
+  };
+  if (state.tense === "pastProgressive"){
+    const affirmative = pastBeForSubject(subjectText);
+  const negative = negativePastBeForSubject(subjectText);
+  return isYes ? aux === affirmative : aux === negative;
+  };
 
   const affirmative = beForSubject(subjectText);
   const negative = negativeBeForSubject(subjectText);
@@ -672,8 +751,12 @@ function newGoal() {
   const tense = TENSES[state.tense];
   const goalWh = state.mode === "wh" ? randomFrom(["what", "where", "when", "why", "how"]) : "";
   const slots =
-    state.mode === "wh" && goalWh === "what"
-      ? tense.slots[state.mode].filter((slot) => slot !== "complement")
+    state.mode === "wh" && goalWh
+      ? tense.slots[state.mode].filter((slot) => {
+          if (goalWh === "what") return slot !== "complement";
+          if (goalWh === "when") return slot !== "time";
+          return true;
+        })
       : tense.slots[state.mode];
   const level = LEVEL_LIMITS[state.level];
   const subject = randomFrom(SUBJECTS.slice(0, level.subjects));
@@ -705,11 +788,13 @@ function goalValue(slot, subject, verb, answer, goalWh = "") {
     negative: "not",
     wh: goalWh || randomFrom(["what", "where", "when", "why", "how"]),
     be: beForSubject(subject.text),
+    pastbe: pastBeForSubject(subject.text),
     goingTo: "going to",
     answer,
     shortDid: answer === "Yes," ? "did" : "didn't",
     shortDo: answer === "Yes," ? (subject.group === "third" ? "does" : "do") : subject.group === "third" ? "doesn't" : "don't",
     shortBe: answer === "Yes," ? beForSubject(subject.text) : negativeBeForSubject(subject.text),
+    shortPastBe: answer === "Yes," ? pastBeForSubject(subject.text) : negativePastBeForSubject(subject.text),
   };
   return values[slot];
 }
@@ -757,7 +842,17 @@ function negativeBeForSubject(subjectText) {
   if (group === "third") return "isn't";
   return "aren't";
 }
+function pastBeForSubject(subjectText){
+  const group = findSubject(subjectText)?.group;
+  if (group === "plural") return "were";
+  return "was";
+}
 
+function negativePastBeForSubject(subjectText) {
+  const group = findSubject(subjectText)?.group;
+  if (group === "plural") return "weren't";
+  return "wasn't";
+}
 function verbSlotHasVerb(slot) {
   return ["verbPast", "verbPresent", "verbBase", "verbIng"].includes(slot);
 }
@@ -801,9 +896,18 @@ function currentWhValue() {
 }
 
 function getStructureText(tense) {
-  const structure = tense.structure[state.mode];
-  if (state.mode === "wh" && currentWhValue() === "what") {
-    return structure.replace(" + complement", "");
+  let structure = tense.structure[state.mode];
+  if (state.hideTime) {
+    structure = structure.replace(/ ?\+ [^+]*time/, "");
+  }
+  if (state.mode === "wh") {
+    const whValue = currentWhValue();
+    if (whValue === "what") {
+      structure = structure.replace(" + complement", "");
+    }
+    if (whValue === "when") {
+      structure = structure.replace(/ \+ [a-z]+ time/, "");
+    }
   }
   return structure;
 }

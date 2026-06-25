@@ -30,6 +30,60 @@ body {
 button,
 select {
   font: inherit;
+  border-radius: 10cm;
+}
+
+.hide-button,
+.hide-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 6px 14px;
+  background-color: rgb(252, 159, 175);
+  min-width: 58px;
+  border: 2px solid var(--line);
+  border-radius: 999px;
+  font-size: 1.1rem;
+  font-weight: 900;
+  cursor: pointer;
+}
+
+.hide-toggle input {
+  appearance: none;
+  width: 42px;
+  height: 24px;
+  background: #fff;
+  border: 2px solid var(--line);
+  border-radius: 999px;
+  position: relative;
+  outline: none;
+  cursor: pointer;
+}
+
+.hide-toggle input::after {
+  content: "";
+  position: absolute;
+  left: 3px;
+  top: 3px;
+  width: 16px;
+  height: 16px;
+  background: var(--line);
+  border-radius: 50%;
+  transition: transform 0.2s ease;
+}
+
+.hide-toggle input:checked {
+  background: var(--yellow);
+  border-color: var(--line);
+}
+
+.hide-toggle input:checked::after {
+  transform: translateX(18px);
+}
+
+.hide-label {
+  font-weight: 700;
+  color: var(--ink);
 }
 
 .app-shell {
@@ -344,6 +398,8 @@ select {
   color: var(--ink);
   font-size: 0.82rem;
   font-weight: 700;
+  padding: 8px 8px;
+
 }
 
 .slot.is-correct .slot-drop {
@@ -411,7 +467,8 @@ select {
   box-shadow: var(--shadow);
 }
 
-@media (min-width: 720px) {
+@media (min-width: 7120px) {
+
 .brand-row{
     flex-direction: row;
     align-items: stretch;
@@ -420,7 +477,10 @@ select {
 .brand-row h1{
     width:100%;
 }
-
+.word-card {
+  display:grid;
+  margin-left: 15px;
+}
 .status-pill{
     display:flex;
     justify-content:center;
