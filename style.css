@@ -19,12 +19,18 @@
 * {
   box-sizing: border-box;
 }
+html, body{
+  height: 100%;
+  overflow-x: hidden;
+  -webkit-overflow-scrolling: touch;
+}
 
 body {
   margin: 0;
   min-height: 100vh;
   background: var(--bg);
   color: var(--ink);
+  overflow-y: auto;
 }
 
 button,
@@ -93,6 +99,13 @@ select {
   background: var(--bg);
 }
 
+.top-panel,
+.bank-panel {
+  max-width: 100%;
+}
+.bank-panel {
+  display: flex;
+}
 .top-panel {
   display: grid;
   gap: 14px;
@@ -468,6 +481,9 @@ select {
 }
 
 @media (min-width: 720px) {
+  body {
+    scroll-behavior: smooth;
+  }
 
 .brand-row{
     flex-direction: row;
@@ -479,6 +495,11 @@ select {
 }
 .word-card {
   display:grid;
+  max-height: 180px;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  touch-action: manipulation;
+  }
 }
 .status-pill{
     display:flex;
@@ -507,7 +528,7 @@ select {
   gap: 12px;
   padding: 16px;
   align-items: flex-start;
-}
+  grid-template-columns: 1fr;
 }
 
 @supports not (background: color-mix(in srgb, red 50%, white)) {
