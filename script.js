@@ -548,9 +548,17 @@ function word(slot, text, value, verbBase = "") {
 }
 
 function selectCard(wordItem) {
-  state.selectedCardId = state.selectedCardId === wordItem.id ? null : wordItem.id;
-  if (wordItem.verbBase) state.selectedVerbBase = wordItem.verbBase;
-  renderBank();
+  // alterna selección (si ya está seleccionada, la deselecciona)
+  state.selectedCardId =
+    state.selectedCardId === wordItem.id ? null : wordItem.id;
+
+  // guarda verb base si existe
+  if (wordItem.verbBase) {
+    state.selectedVerbBase = wordItem.verbBase;
+  }
+
+  // solo actualizar UI (sin romper scroll)
+  updateSelectionUI();
 }
 
 function placeSelectedCard(index) {
