@@ -467,7 +467,7 @@ select {
   box-shadow: var(--shadow);
 }
 
-@media (min-width: 7120px) {
+@media (min-width: 720px) {
 
 .brand-row{
     flex-direction: row;
