@@ -479,7 +479,6 @@ select {
 }
 .word-card {
   display:grid;
-  margin-left: 15px;
 }
 .status-pill{
     display:flex;
